@@ -1,5 +1,7 @@
 package com.jai.mario;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,8 +22,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // First-launch check
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        if (prefs.getBoolean("firstRun", true)) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+            finish();
+            return;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Welcome user with their name
+        String username = prefs.getString("username", "User");
+        Toast.makeText(this, "Welcome back, " + username + "!", Toast.LENGTH_LONG).show();
 
         inputNumber = findViewById(R.id.inputNumber);
         inputRoot = findViewById(R.id.inputRoot);
