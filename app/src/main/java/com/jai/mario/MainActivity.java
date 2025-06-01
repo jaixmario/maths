@@ -1,6 +1,8 @@
 package com.jai.mario;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +27,22 @@ public class MainActivity extends AppCompatActivity {
         inputRoot = findViewById(R.id.inputRoot);
         calculateButton = findViewById(R.id.calculateButton);
         resultText = findViewById(R.id.resultText);
+
+        inputNumber.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().isEmpty()) inputRoot.setText(""); 
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
+
+        inputRoot.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().isEmpty()) inputNumber.setText(""); 
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
 
         calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
