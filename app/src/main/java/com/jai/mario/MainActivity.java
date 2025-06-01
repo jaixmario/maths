@@ -28,10 +28,11 @@ public class MainActivity extends AppCompatActivity {
         calculateButton = findViewById(R.id.calculateButton);
         resultText = findViewById(R.id.resultText);
 
+        // Automatically clear the other input when typing
         inputNumber.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().isEmpty()) inputRoot.setText(""); 
+                if (!s.toString().isEmpty()) inputRoot.setText("");
             }
             @Override public void afterTextChanged(Editable s) {}
         });
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         inputRoot.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().isEmpty()) inputNumber.setText(""); 
+                if (!s.toString().isEmpty()) inputNumber.setText("");
             }
             @Override public void afterTextChanged(Editable s) {}
         });
@@ -54,7 +55,19 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         int number = Integer.parseInt(squareText);
                         int square = number * number;
-                        resultText.setText(number + "² = " + square);
+                        int tens = number / 10;
+                        int units = number % 10;
+                        int step1 = tens * 10;
+                        int a2 = step1 * step1;
+                        int ab2 = 2 * step1 * units;
+                        int b2 = units * units;
+                        int total = a2 + ab2 + b2;
+
+                        String steps = number + "² = (" + step1 + " + " + units + ")² =\n"
+                                + step1 + "² + 2×" + step1 + "×" + units + " + " + units + "²\n"
+                                + "     = " + a2 + " + " + ab2 + " + " + b2 + " = " + total;
+
+                        resultText.setText(steps);
                     } catch (NumberFormatException e) {
                         Toast.makeText(MainActivity.this, "Invalid number for square", Toast.LENGTH_SHORT).show();
                     }
@@ -64,7 +77,8 @@ public class MainActivity extends AppCompatActivity {
                         double root = Math.sqrt(number);
                         int rounded = (int) root;
                         if (rounded * rounded == number) {
-                            resultText.setText(number + " = " + rounded + "²");
+                            String steps = "√" + number + " = " + rounded + "\nBecause " + rounded + "² = " + number;
+                            resultText.setText(steps);
                         } else {
                             resultText.setText(number + " is not a perfect square");
                         }
