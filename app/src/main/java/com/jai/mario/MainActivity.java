@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -37,8 +38,11 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            if (position == 0) tab.setText("Square");
-            else tab.setText("Cube");
+            switch (position) {
+                case 0: tab.setText("Square"); break;
+                case 1: tab.setText("Cube"); break;
+                case 2: tab.setText("LCM / HCF"); break;
+            }
         }).attach();
     }
 }

@@ -7,6 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.jai.mario.fragments.SquareFragment;
 import com.jai.mario.fragments.CubeFragment;
+import com.jai.mario.fragments.LcmHcfFragment;
 
 public class TabPagerAdapter extends FragmentStateAdapter {
 
@@ -17,15 +18,16 @@ public class TabPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        if (position == 0) {
-            return new SquareFragment();
-        } else {
-            return new CubeFragment(); // placeholder, create CubeFragment later
+        switch (position) {
+            case 0: return new SquareFragment();
+            case 1: return new CubeFragment();
+            case 2: return new LcmHcfFragment();
+            default: return new SquareFragment();
         }
     }
 
     @Override
     public int getItemCount() {
-        return 2; // Two tabs: Square and Cube
+        return 3; 
     }
 }
