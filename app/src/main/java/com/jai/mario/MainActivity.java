@@ -1,5 +1,7 @@
 package com.jai.mario;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -14,23 +16,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        if (prefs.getBoolean("firstRun", true)) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+            finish();
+            return;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabs);
+
+        String username = prefs.getString("username", "User");
+        Toast.makeText(this, "Welcome back, " + username + "!", Toast.LENGTH_LONG).show();
 
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
 
-        // Set up adapter
         TabPagerAdapter adapter = new TabPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
-        // Attach tab titles
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            if (position == 0) {
-                tab.setText("Square");
-            } else {
-                tab.setText("Cube");
-            }
+            if (position == 0) tab.setText("Square");
+            else tab.setText("Cube");
         }).attach();
     }
 }
