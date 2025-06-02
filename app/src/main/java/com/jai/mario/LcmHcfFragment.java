@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment;
 public class LcmHcfFragment extends Fragment {
 
     TextInputEditText inputA, inputB;
-    MaterialButton calculateBtn;
+    MaterialButton normalBtn, advancedBtn;
     TextView resultText;
 
     @Nullable
@@ -30,10 +30,11 @@ public class LcmHcfFragment extends Fragment {
 
         inputA = view.findViewById(R.id.inputA);
         inputB = view.findViewById(R.id.inputB);
-        calculateBtn = view.findViewById(R.id.calculateBtn);
+        normalBtn = view.findViewById(R.id.normalBtn);
+        advancedBtn = view.findViewById(R.id.advancedBtn);
         resultText = view.findViewById(R.id.resultText);
 
-        calculateBtn.setOnClickListener(v -> {
+        normalBtn.setOnClickListener(v -> {
             String aText = inputA.getText().toString().trim();
             String bText = inputB.getText().toString().trim();
 
@@ -50,7 +51,43 @@ public class LcmHcfFragment extends Fragment {
 
                 String result = "HCF(" + a + ", " + b + ") = " + hcf + "\nLCM(" + a + ", " + b + ") = " + lcm;
                 resultText.setText(result);
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_SHORT).show();
+            }
+        });
 
+        advancedBtn.setOnClickListener(v -> {
+            String aText = inputA.getText().toString().trim();
+            String bText = inputB.getText().toString().trim();
+
+            if (TextUtils.isEmpty(aText) || TextUtils.isEmpty(bText)) {
+                Toast.makeText(getContext(), "Enter both numbers", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            try {
+                int a = Integer.parseInt(aText);
+                int b = Integer.parseInt(bText);
+                int originalA = a, originalB = b;
+
+                StringBuilder steps = new StringBuilder("Euclidean Method:\n");
+
+                while (b != 0) {
+                    steps.append("HCF(").append(a).append(", ").append(b).append(") → ");
+                    int temp = b;
+                    b = a % b;
+                    a = temp;
+                    steps.append("Now HCF(").append(a).append(", ").append(b).append(")\n");
+                }
+
+                int hcf = Math.abs(a);
+                int lcm = (originalA * originalB) / hcf;
+
+                steps.append("\nFinal HCF = ").append(hcf);
+                steps.append("\nLCM = (").append(originalA).append(" × ").append(originalB).append(") / ").append(hcf)
+                     .append(" = ").append(lcm);
+
+                resultText.setText(steps.toString());
             } catch (NumberFormatException e) {
                 Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_SHORT).show();
             }
