@@ -1,9 +1,14 @@
 package com.jai.mario;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -28,15 +33,29 @@ public class GeminiActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Force dark theme always
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
         ScrollView scrollView = new ScrollView(this);
+        scrollView.setBackgroundColor(0xFF121212); 
+
         TextView textView = new TextView(this);
-        textView.setPadding(30, 30, 30, 30);
-        scrollView.addView(textView);
+        textView.setTextColor(0xFFFFFFFF); 
+        textView.setPadding(32, 32, 32, 32);
+        textView.setTextSize(16);
+        textView.setLineSpacing(1.4f, 1.4f);
+        textView.setTypeface(Typeface.MONOSPACE);
+        textView.setMovementMethod(new ScrollingMovementMethod());
+
+        scrollView.addView(textView, new ScrollView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+
         setContentView(scrollView);
 
         String prompt = getIntent().getStringExtra("prompt");
         if (prompt == null || prompt.isEmpty()) {
-            textView.setText("No prompt received.");
+            textView.setText("⚠️ No prompt received.");
             return;
         }
 
@@ -44,7 +63,7 @@ public class GeminiActivity extends AppCompatActivity {
             try {
                 OkHttpClient client = new OkHttpClient();
 
-                String json = buildCorrectJson(prompt); // ✅ correct format
+                String json = buildCorrectJson(prompt);
 
                 Request request = new Request.Builder()
                         .url(GEMINI_URL)
@@ -53,17 +72,17 @@ public class GeminiActivity extends AppCompatActivity {
 
                 try (Response response = client.newCall(request).execute()) {
                     if (!response.isSuccessful()) {
-                        runOnUiThread(() -> textView.setText("Request failed: " + response.code() + " " + response.message()));
+                        runOnUiThread(() -> textView.setText("❌ Request failed: " + response.code() + " " + response.message()));
                         return;
                     }
 
                     String body = response.body().string();
                     String output = parseResponse(body);
-                    runOnUiThread(() -> textView.setText(output));
+                    runOnUiThread(() -> textView.setText(formatForMarkdown(output)));
                 }
 
             } catch (IOException e) {
-                runOnUiThread(() -> textView.setText("Error: " + e.getMessage()));
+                runOnUiThread(() -> textView.setText("❌ Error: " + e.getMessage()));
             }
         });
     }
@@ -98,9 +117,18 @@ public class GeminiActivity extends AppCompatActivity {
                     return parts.get(0).getAsJsonObject().get("text").getAsString();
                 }
             }
-            return "No response text found.";
+            return "⚠️ No response text found.";
         } catch (Exception e) {
-            return "Failed to parse response: " + e.getMessage();
+            return "⚠️ Failed to parse response: " + e.getMessage();
         }
+    }
+
+    private String formatForMarkdown(String input) {
+        return input
+                .replace("**", "")  
+                .replaceAll("(?m)^#{1,6}\\s*", "") 
+                .replaceAll("\\*\\*", "") 
+                .replaceAll("```", "") 
+                .trim();
     }
 }
