@@ -20,8 +20,9 @@ import okhttp3.Response;
 
 public class GeminiActivity extends AppCompatActivity {
 
-    private static final String API_KEY = "AIzaSyAvnw_XPRrCXPG2hUrhn9DgU6a9G_K4KuQ";
-    private static final String GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + API_KEY;
+    private static final String API_KEY = "AIzaSyAvnw_XPRrCXPG2hUrhn9DgU6a9G_K4KuQ"; // Replace with your real key
+    private static final String GEMINI_URL =
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + API_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class GeminiActivity extends AppCompatActivity {
 
         ScrollView scrollView = new ScrollView(this);
         TextView textView = new TextView(this);
-        textView.setPadding(30, 30, 30, 30);
+        textView.setPadding(32, 32, 32, 32);
         scrollView.addView(textView);
         setContentView(scrollView);
 
@@ -41,12 +42,12 @@ public class GeminiActivity extends AppCompatActivity {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                String jsonRequest = buildJsonPrompt(prompt);
+                String json = buildJsonPrompt(prompt);
 
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(GEMINI_URL)
-                        .post(RequestBody.create(jsonRequest, MediaType.get("application/json")))
+                        .post(RequestBody.create(json, MediaType.get("application/json")))
                         .build();
 
                 try (Response response = client.newCall(request).execute()) {
@@ -55,11 +56,10 @@ public class GeminiActivity extends AppCompatActivity {
                         return;
                     }
 
-                    String responseBody = response.body().string();
-                    String parsedText = parseGeminiResponse(responseBody);
-                    runOnUiThread(() -> textView.setText(parsedText));
+                    String body = response.body().string();
+                    String output = parseResponse(body);
+                    runOnUiThread(() -> textView.setText(output));
                 }
-
             } catch (IOException e) {
                 runOnUiThread(() -> textView.setText("Error: " + e.getMessage()));
             }
@@ -79,7 +79,7 @@ public class GeminiActivity extends AppCompatActivity {
         return finalObj.toString();
     }
 
-    private String parseGeminiResponse(String responseBody) {
+    private String parseResponse(String responseBody) {
         try {
             JsonObject root = JsonParser.parseString(responseBody).getAsJsonObject();
             JsonArray candidates = root.getAsJsonArray("candidates");
