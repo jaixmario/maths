@@ -20,9 +20,9 @@ import okhttp3.Response;
 
 public class GeminiActivity extends AppCompatActivity {
 
-    private static final String API_KEY = "AIzaSyAvnw_XPRrCXPG2hUrhn9DgU6a9G_K4KuQ"; // Replace with your real key
+    private static final String API_KEY = "AIzaSyAvnw_XPRrCXPG2hUrhn9DgU6a9G_K4KuQ"; 
     private static final String GEMINI_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + API_KEY;
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + API_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class GeminiActivity extends AppCompatActivity {
 
         ScrollView scrollView = new ScrollView(this);
         TextView textView = new TextView(this);
-        textView.setPadding(32, 32, 32, 32);
+        textView.setPadding(30, 30, 30, 30);
         scrollView.addView(textView);
         setContentView(scrollView);
 
@@ -42,9 +42,10 @@ public class GeminiActivity extends AppCompatActivity {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                String json = buildJsonPrompt(prompt);
-
                 OkHttpClient client = new OkHttpClient();
+
+                String json = buildCorrectJson(prompt); // ✅ correct format
+
                 Request request = new Request.Builder()
                         .url(GEMINI_URL)
                         .post(RequestBody.create(json, MediaType.get("application/json")))
@@ -52,7 +53,7 @@ public class GeminiActivity extends AppCompatActivity {
 
                 try (Response response = client.newCall(request).execute()) {
                     if (!response.isSuccessful()) {
-                        runOnUiThread(() -> textView.setText("Request failed: " + response.message()));
+                        runOnUiThread(() -> textView.setText("Request failed: " + response.code() + " " + response.message()));
                         return;
                     }
 
@@ -60,23 +61,30 @@ public class GeminiActivity extends AppCompatActivity {
                     String output = parseResponse(body);
                     runOnUiThread(() -> textView.setText(output));
                 }
+
             } catch (IOException e) {
                 runOnUiThread(() -> textView.setText("Error: " + e.getMessage()));
             }
         });
     }
 
-    private String buildJsonPrompt(String prompt) {
-        JsonObject textObj = new JsonObject();
-        textObj.addProperty("text", prompt);
+    private String buildCorrectJson(String prompt) {
+        JsonObject textPart = new JsonObject();
+        textPart.addProperty("text", prompt);
 
-        JsonArray contents = new JsonArray();
-        contents.add(textObj);
+        JsonArray partsArray = new JsonArray();
+        partsArray.add(textPart);
 
-        JsonObject finalObj = new JsonObject();
-        finalObj.add("contents", contents);
+        JsonObject content = new JsonObject();
+        content.add("parts", partsArray);
 
-        return finalObj.toString();
+        JsonArray contentsArray = new JsonArray();
+        contentsArray.add(content);
+
+        JsonObject requestBody = new JsonObject();
+        requestBody.add("contents", contentsArray);
+
+        return requestBody.toString();
     }
 
     private String parseResponse(String responseBody) {
