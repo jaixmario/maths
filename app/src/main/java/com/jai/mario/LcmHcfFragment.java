@@ -1,5 +1,9 @@
 package com.jai.mario.fragments;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -8,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jai.mario.GeminiActivity;
 import com.jai.mario.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -19,7 +24,7 @@ import androidx.fragment.app.Fragment;
 public class LcmHcfFragment extends Fragment {
 
     TextInputEditText inputA, inputB;
-    MaterialButton normalBtn, advancedBtn;
+    MaterialButton normalBtn, advancedBtn, askAiButton;
     TextView resultText;
 
     @Nullable
@@ -32,9 +37,11 @@ public class LcmHcfFragment extends Fragment {
         inputB = view.findViewById(R.id.inputB);
         normalBtn = view.findViewById(R.id.normalBtn);
         advancedBtn = view.findViewById(R.id.advancedBtn);
+        askAiButton = view.findViewById(R.id.askAiButton);
         resultText = view.findViewById(R.id.resultText);
 
         normalBtn.setOnClickListener(v -> {
+            askAiButton.setVisibility(View.GONE);
             String aText = inputA.getText().toString().trim();
             String bText = inputB.getText().toString().trim();
 
@@ -57,6 +64,7 @@ public class LcmHcfFragment extends Fragment {
         });
 
         advancedBtn.setOnClickListener(v -> {
+            askAiButton.setVisibility(View.GONE);
             String aText = inputA.getText().toString().trim();
             String bText = inputB.getText().toString().trim();
 
@@ -85,11 +93,34 @@ public class LcmHcfFragment extends Fragment {
 
                 steps.append("\nFinal HCF = ").append(hcf);
                 steps.append("\nLCM = (").append(originalA).append(" × ").append(originalB).append(") / ").append(hcf)
-                     .append(" = ").append(lcm);
+                        .append(" = ").append(lcm);
 
                 resultText.setText(steps.toString());
+                askAiButton.setVisibility(View.VISIBLE);
             } catch (NumberFormatException e) {
                 Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        askAiButton.setOnClickListener(v -> {
+            String result = resultText.getText().toString().trim();
+            if (!result.isEmpty()) {
+                String prompt = "Please explain step-by-step how this LCM and HCF result was calculated.\n\nResult:\n" + result;
+                Intent intent = new Intent(getContext(), GeminiActivity.class);
+                intent.putExtra("prompt", prompt);
+                startActivity(intent);
+            } else {
+                Toast.makeText(getContext(), "No result to send to AI", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        resultText.setOnClickListener(v -> {
+            String text = resultText.getText().toString().trim();
+            if (!text.isEmpty()) {
+                ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("LCM & HCF Result", text);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
             }
         });
 
