@@ -1,5 +1,6 @@
 package com.jai.mario.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jai.mario.GeminiActivity;
 import com.jai.mario.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -20,7 +22,7 @@ import androidx.fragment.app.Fragment;
 public class CubeFragment extends Fragment {
 
     TextInputEditText inputCube, inputCubeRoot;
-    MaterialButton normalButton, advancedButton;
+    MaterialButton normalButton, advancedButton, askAiButton;
     TextView resultText;
 
     @Nullable
@@ -33,6 +35,7 @@ public class CubeFragment extends Fragment {
         inputCubeRoot = view.findViewById(R.id.inputCubeRoot);
         normalButton = view.findViewById(R.id.normalButton);
         advancedButton = view.findViewById(R.id.advancedButton);
+        askAiButton = view.findViewById(R.id.askAiButton);
         resultText = view.findViewById(R.id.resultText);
 
         inputCube.addTextChangedListener(new TextWatcher() {
@@ -52,6 +55,7 @@ public class CubeFragment extends Fragment {
         });
 
         normalButton.setOnClickListener(view1 -> {
+            askAiButton.setVisibility(View.GONE); // Hide AI button on normal
             String cubeText = inputCube.getText().toString().trim();
             String rootText = inputCubeRoot.getText().toString().trim();
 
@@ -82,6 +86,7 @@ public class CubeFragment extends Fragment {
         });
 
         advancedButton.setOnClickListener(view12 -> {
+            askAiButton.setVisibility(View.GONE);
             String cubeText = inputCube.getText().toString().trim();
             String rootText = inputCubeRoot.getText().toString().trim();
 
@@ -91,6 +96,7 @@ public class CubeFragment extends Fragment {
                     int cube = number * number * number;
                     String steps = number + "³ = " + number + " × " + number + " × " + number + " = " + cube;
                     resultText.setText(steps);
+                    askAiButton.setVisibility(View.VISIBLE); // Show Ask AI
                 } catch (NumberFormatException e) {
                     Toast.makeText(getContext(), "Invalid number for cube", Toast.LENGTH_SHORT).show();
                 }
@@ -110,6 +116,18 @@ public class CubeFragment extends Fragment {
                 }
             } else {
                 Toast.makeText(getContext(), "Please enter a value", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        askAiButton.setOnClickListener(v -> {
+            String result = resultText.getText().toString().trim();
+            if (!result.isEmpty()) {
+                String prompt = "Please explain step-by-step how this result was calculated as a cube operation.\n\nResult:\n" + result;
+                Intent intent = new Intent(getContext(), GeminiActivity.class);
+                intent.putExtra("prompt", prompt);
+                startActivity(intent);
+            } else {
+                Toast.makeText(getContext(), "No result to send to AI", Toast.LENGTH_SHORT).show();
             }
         });
 
