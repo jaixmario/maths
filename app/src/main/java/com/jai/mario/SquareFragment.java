@@ -1,5 +1,8 @@
 package com.jai.mario.fragments;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -120,6 +123,16 @@ public class SquareFragment extends Fragment {
                 }
             } else {
                 Toast.makeText(getContext(), "Please enter a value", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        resultText.setOnClickListener(v -> {
+            String text = resultText.getText().toString().trim();
+            if (!text.isEmpty()) {
+                ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Result", text);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
             }
         });
 
