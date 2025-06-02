@@ -10,15 +10,14 @@ android {
         applicationId = "com.jai.mario"
         minSdk = 24
         targetSdk = 35
-        versionCode = 4
-        versionName = "1.1.4"
+        versionCode = 5
+        versionName = "1.1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
         create("release") {
-            // These four ENV vars will be provided by GitHub Actions
             storeFile = file(System.getenv("KEYSTORE_PATH"))
             storePassword = System.getenv("KEYSTORE_PASSWORD")
             keyAlias    = System.getenv("KEY_ALIAS")
