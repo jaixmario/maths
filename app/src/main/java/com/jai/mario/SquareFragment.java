@@ -3,6 +3,7 @@ package com.jai.mario.fragments;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,7 +24,7 @@ import androidx.fragment.app.Fragment;
 public class SquareFragment extends Fragment {
 
     TextInputEditText inputNumber, inputRoot;
-    MaterialButton normalButton, advancedButton;
+    MaterialButton normalButton, advancedButton, askAiButton;
     TextView resultText;
 
     @Nullable
@@ -36,6 +37,7 @@ public class SquareFragment extends Fragment {
         inputRoot = view.findViewById(R.id.inputRoot);
         normalButton = view.findViewById(R.id.normalButton);
         advancedButton = view.findViewById(R.id.advancedButton);
+        askAiButton = view.findViewById(R.id.askAiButton);
         resultText = view.findViewById(R.id.resultText);
 
         inputNumber.addTextChangedListener(new TextWatcher() {
@@ -55,6 +57,7 @@ public class SquareFragment extends Fragment {
         });
 
         normalButton.setOnClickListener(view1 -> {
+            askAiButton.setVisibility(View.GONE); // Hide AI button on normal
             String squareText = inputNumber.getText().toString().trim();
             String rootText = inputRoot.getText().toString().trim();
 
@@ -88,6 +91,8 @@ public class SquareFragment extends Fragment {
             String squareText = inputNumber.getText().toString().trim();
             String rootText = inputRoot.getText().toString().trim();
 
+            askAiButton.setVisibility(View.GONE);
+
             if (!squareText.isEmpty()) {
                 try {
                     int number = Integer.parseInt(squareText);
@@ -104,6 +109,7 @@ public class SquareFragment extends Fragment {
                             + "     = " + a2 + " + " + ab2 + " + " + b2 + " = " + total;
 
                     resultText.setText(steps);
+                    askAiButton.setVisibility(View.VISIBLE); // Show AI button only after advanced
                 } catch (NumberFormatException e) {
                     Toast.makeText(getContext(), "Invalid number for square", Toast.LENGTH_SHORT).show();
                 }
@@ -123,6 +129,18 @@ public class SquareFragment extends Fragment {
                 }
             } else {
                 Toast.makeText(getContext(), "Please enter a value", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        askAiButton.setOnClickListener(v -> {
+            String result = resultText.getText().toString().trim();
+            if (!result.isEmpty()) {
+                String prompt = "Please explain step-by-step how this result was calculated using the formula (a + b)² = a² + 2ab + b².\n\nResult:\n" + result;
+                Intent intent = new Intent(getContext(), GeminiActivity.class);
+                intent.putExtra("prompt", prompt);
+                startActivity(intent);
+            } else {
+                Toast.makeText(getContext(), "No result to send to AI", Toast.LENGTH_SHORT).show();
             }
         });
 
