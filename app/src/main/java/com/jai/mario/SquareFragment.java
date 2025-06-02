@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.jai.mario.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.jai.mario.GeminiActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
