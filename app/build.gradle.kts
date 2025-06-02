@@ -47,6 +47,8 @@ android {
 }
 
 dependencies {
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation ("com.squareup.okio:okio:3.8.0")
+    implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("com.google.android.material:material:1.14.0-alpha01")
-    implementation ("com.google.genai:google-genai:1.0.0")
 }
