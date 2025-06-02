@@ -1,5 +1,8 @@
 package com.jai.mario.fragments;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -55,7 +58,7 @@ public class CubeFragment extends Fragment {
         });
 
         normalButton.setOnClickListener(view1 -> {
-            askAiButton.setVisibility(View.GONE); // Hide AI button on normal
+            askAiButton.setVisibility(View.GONE);
             String cubeText = inputCube.getText().toString().trim();
             String rootText = inputCubeRoot.getText().toString().trim();
 
@@ -96,7 +99,7 @@ public class CubeFragment extends Fragment {
                     int cube = number * number * number;
                     String steps = number + "³ = " + number + " × " + number + " × " + number + " = " + cube;
                     resultText.setText(steps);
-                    askAiButton.setVisibility(View.VISIBLE); // Show Ask AI
+                    askAiButton.setVisibility(View.VISIBLE);
                 } catch (NumberFormatException e) {
                     Toast.makeText(getContext(), "Invalid number for cube", Toast.LENGTH_SHORT).show();
                 }
@@ -128,6 +131,16 @@ public class CubeFragment extends Fragment {
                 startActivity(intent);
             } else {
                 Toast.makeText(getContext(), "No result to send to AI", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        resultText.setOnClickListener(v -> {
+            String text = resultText.getText().toString().trim();
+            if (!text.isEmpty()) {
+                ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Cube Result", text);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
             }
         });
 
