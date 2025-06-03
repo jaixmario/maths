@@ -20,7 +20,8 @@ public class UpdateChecker {
 
     public static void checkForUpdate(Activity activity) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy); 
+        StrictMode.setThreadPolicy(policy);
+
         try {
             URL url = new URL(VERSION_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -39,7 +40,7 @@ public class UpdateChecker {
             String latestVersionName = obj.getString("versionName");
             String updateUrl = obj.getString("updateUrl");
 
-            int currentVersionCode = BuildConfig.VERSION_CODE;
+            int currentVersionCode = com.jai.mario.BuildConfig.VERSION_CODE; // ✅ FIXED
 
             if (latestVersionCode > currentVersionCode) {
                 new AlertDialog.Builder(activity)
