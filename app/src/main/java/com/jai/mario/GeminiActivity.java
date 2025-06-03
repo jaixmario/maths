@@ -43,7 +43,7 @@ public class GeminiActivity extends AppCompatActivity {
         setContentView(scrollView);
 
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String API_KEY = prefs.getString("gemini_key", null);
+        String API_KEY = prefs.getString("apiKey", null);
 
         if (API_KEY == null || API_KEY.trim().isEmpty()) {
             textView.setText("\u26A0\uFE0F Please enter key in Settings.");
