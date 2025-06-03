@@ -35,7 +35,13 @@ public class UpdateChecker {
             } else {
                 pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
             }
-            int currentVersionCode = pInfo.versionCode;
+
+            int currentVersionCode;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                currentVersionCode = (int) pInfo.getLongVersionCode(); // Safe cast
+            } else {
+                currentVersionCode = pInfo.versionCode;
+            }
 
             URL url = new URL(VERSION_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
