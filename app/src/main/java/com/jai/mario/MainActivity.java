@@ -6,10 +6,14 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.jai.mario.fragments.HomeFragment;
+import com.jai.mario.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,15 +38,22 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
 
-        TabPagerAdapter adapter = new TabPagerAdapter(this);
-        viewPager.setAdapter(adapter);
+        viewPager.setAdapter(new FragmentStateAdapter(this) {
+            @Override
+            public int getItemCount() {
+                return 2;
+            }
+
+            @Override
+            public Fragment createFragment(int position) {
+                if (position == 0) return new HomeFragment();
+                else return new SettingsFragment();
+            }
+        });
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            switch (position) {
-                case 0: tab.setText("Square"); break;
-                case 1: tab.setText("Cube"); break;
-                case 2: tab.setText("LCM / HCF"); break;
-            }
+            if (position == 0) tab.setText("Home");
+            else tab.setText("Settings");
         }).attach();
     }
 }
