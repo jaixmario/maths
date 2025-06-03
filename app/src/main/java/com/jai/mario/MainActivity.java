@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -17,9 +16,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Ensure proper keyboard + nav bar handling
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-
         super.onCreate(savedInstanceState);
 
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
@@ -51,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         });
-        
+
         if (savedInstanceState == null) {
             bottomNav.setSelectedItemId(R.id.nav_home);
         }
