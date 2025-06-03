@@ -1,27 +1,61 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#121212"
-    android:orientation="vertical"
-    android:padding="24dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="24dp">
 
-    <EditText
-        android:id="@+id/apiKeyInput"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Gemini API key"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#888888"
-        android:background="@android:drawable/editbox_background"
-        android:inputType="text" />
+        android:gravity="center_horizontal"
+        android:layout_gravity="center">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/saveBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Save Key"
-        android:textColor="#FFFFFF"
-        app:backgroundTint="#03DAC6" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/settingsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textSize="24sp"
+            android:textColor="#BB86FC"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxBackgroundColor="#1F1F1F"
+            app:boxStrokeColor="#03DAC6"
+            app:hintTextColor="@color/selector_nav"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/apiKeyInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Gemini API key"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#888888"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Key"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            app:cornerRadius="16dp"
+            app:icon="@drawable/ic_save"
+            app:iconPadding="8dp"
+            app:iconTint="#FFFFFF"
+            app:backgroundTint="#03DAC6" />
+
+    </LinearLayout>
+</ScrollView>
