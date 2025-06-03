@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -17,6 +17,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Ensure proper keyboard + nav bar handling
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
+        super.onCreate(savedInstanceState);
+
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         if (prefs.getBoolean("firstRun", true)) {
             startActivity(new Intent(this, WelcomeActivity.class));
@@ -24,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabs);
 
         String username = prefs.getString("username", "User");
@@ -47,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         });
-
-        // Load default fragment
+        
         if (savedInstanceState == null) {
             bottomNav.setSelectedItemId(R.id.nav_home);
         }
