@@ -5,20 +5,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jai.mario.fragments.HomeFragment;
 import com.jai.mario.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
-
-    private ViewPager2 viewPager;
-    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,25 +30,27 @@ public class MainActivity extends AppCompatActivity {
         String username = prefs.getString("username", "User");
         Toast.makeText(this, "Welcome back, " + username + "!", Toast.LENGTH_LONG).show();
 
-        viewPager = findViewById(R.id.viewPager);
-        tabLayout = findViewById(R.id.tabLayout);
-
-        viewPager.setAdapter(new FragmentStateAdapter(this) {
-            @Override
-            public int getItemCount() {
-                return 2;
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment;
+            if (item.getItemId() == R.id.nav_home) {
+                selectedFragment = new HomeFragment();
+            } else if (item.getItemId() == R.id.nav_settings) {
+                selectedFragment = new SettingsFragment();
+            } else {
+                return false;
             }
 
-            @Override
-            public Fragment createFragment(int position) {
-                if (position == 0) return new HomeFragment();
-                else return new SettingsFragment();
-            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, selectedFragment)
+                    .commit();
+
+            return true;
         });
 
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            if (position == 0) tab.setText("Home");
-            else tab.setText("Settings");
-        }).attach();
+        // Load default fragment
+        if (savedInstanceState == null) {
+            bottomNav.setSelectedItemId(R.id.nav_home);
+        }
     }
 }
