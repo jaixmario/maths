@@ -26,8 +26,15 @@ public class UpdateChecker {
 
         try {
             // Get current version code from package manager
-            PackageManager pm = activity.getPackageManager();
-            PackageInfo pInfo = pm.getPackageInfo(activity.getPackageName(), 0);
+            PackageInfo pInfo;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            pInfo = activity.getPackageManager().getPackageInfo(
+            activity.getPackageName(),
+            PackageManager.PackageInfoFlags.of(0)
+            );
+            } else {
+            pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0)
+            }
             int currentVersionCode = pInfo.versionCode;
 
             // Fetch remote version JSON
