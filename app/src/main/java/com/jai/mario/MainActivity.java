@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jai.mario.fragments.HomeFragment;
 import com.jai.mario.fragments.SettingsFragment;
 import com.jai.mario.UpdateChecker;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -51,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             bottomNav.setSelectedItemId(R.id.nav_home);
         }
-
-        UpdateChecker.checkForUpdate(this);
+        if (prefs.getBoolean("checkForUpdates", true)) {
+            UpdateChecker.checkForUpdate(this);
+        }
     }
 }

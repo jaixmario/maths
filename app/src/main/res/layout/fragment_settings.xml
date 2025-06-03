@@ -48,14 +48,22 @@
             android:id="@+id/saveBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Key"
+            android:text="Save API Key"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             app:cornerRadius="16dp"
             app:icon="@drawable/ic_save"
             app:iconPadding="8dp"
             app:iconTint="#FFFFFF"
-            app:backgroundTint="#03DAC6" />
+            app:backgroundTint="#03DAC6"
+            android:layout_marginBottom="16dp" />
 
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/updateSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Check for Updates"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp" />
     </LinearLayout>
 </ScrollView>
