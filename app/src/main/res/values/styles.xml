@@ -1,37 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">#BB86FC</item> 
-        <item name="colorPrimaryVariant">#3700B3</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
 
-        <item name="colorSecondary">#03DAC5</item> 
-        <item name="colorSecondaryVariant">#018786</item>
-        <item name="colorOnSecondary">#000000</item>
-
-        <item name="android:statusBarColor">#1A1A1A</item> 
-        <item name="android:windowBackground">#121212</item> 
+    <style name="BottomNavColdStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+    <item name="itemIconSize">20dp</item>
+    <item name="itemTextAppearanceActive">@style/BottomNavTextActive</item>
+    <item name="itemTextAppearanceInactive">@style/BottomNavTextInactive</item>
+    <item name="itemRippleColor">@android:color/transparent</item>
+    <item name="backgroundTint">#1A1A1A</item>
+    <item name="elevation">8dp</item>
     </style>
     
-    <style name="BottomNavColdStyle" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="itemIconSize">20dp</item>
-        <item name="itemTextAppearanceActive">@style/BottomNavTextActive</item>
-        <item name="itemTextAppearanceInactive">@style/BottomNavTextInactive</item>
-        <item name="itemRippleColor">@android:color/transparent</item>
-        <item name="backgroundTint">#1A1A1A</item>
-        <item name="elevation">8dp</item>
-    </style>
-
     <style name="BottomNavTextActive" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">#BB86FC</item> <!-- Cold purple -->
+    <item name="android:textSize">12sp</item>
+    <item name="android:textColor">#BB86FC</item>
     </style>
-
+    
     <style name="BottomNavTextInactive" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">#888888</item>
+    <item name="android:textSize">12sp</item>
+    <item name="android:textColor">#888888</item>
     </style>
 
 </resources>
