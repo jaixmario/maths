@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.StrictMode;
 import android.widget.Toast;
 
@@ -25,19 +26,17 @@ public class UpdateChecker {
         StrictMode.setThreadPolicy(policy);
 
         try {
-            // Get current version code from package manager
             PackageInfo pInfo;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            pInfo = activity.getPackageManager().getPackageInfo(
-            activity.getPackageName(),
-            PackageManager.PackageInfoFlags.of(0)
-            );
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                pInfo = activity.getPackageManager().getPackageInfo(
+                        activity.getPackageName(),
+                        PackageManager.PackageInfoFlags.of(0)
+                );
             } else {
-            pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0)
+                pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
             }
             int currentVersionCode = pInfo.versionCode;
 
-            // Fetch remote version JSON
             URL url = new URL(VERSION_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(5000);
@@ -55,7 +54,6 @@ public class UpdateChecker {
             String latestVersionName = obj.getString("versionName");
             String updateUrl = obj.getString("updateUrl");
 
-            // Compare and show dialog
             if (latestVersionCode > currentVersionCode) {
                 new AlertDialog.Builder(activity)
                         .setTitle("Update Available")
