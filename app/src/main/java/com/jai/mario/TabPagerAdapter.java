@@ -8,6 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.jai.mario.fragments.SquareFragment;
 import com.jai.mario.fragments.CubeFragment;
 import com.jai.mario.fragments.LcmHcfFragment;
+import com.jai.mario.fragments.TrigFragment; 
 
 public class TabPagerAdapter extends FragmentStateAdapter {
 
@@ -22,12 +23,13 @@ public class TabPagerAdapter extends FragmentStateAdapter {
             case 0: return new SquareFragment();
             case 1: return new CubeFragment();
             case 2: return new LcmHcfFragment();
+            case 3: return new TrigFragment(); // ✅ New case
             default: return new SquareFragment();
         }
     }
 
     @Override
     public int getItemCount() {
-        return 3; 
+        return 4; // ✅ Updated count
     }
 }
