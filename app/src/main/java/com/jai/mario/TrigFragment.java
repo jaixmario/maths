@@ -18,6 +18,7 @@ import com.jai.mario.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 public class TrigFragment extends Fragment {
@@ -27,6 +28,9 @@ public class TrigFragment extends Fragment {
                    secButton, cosecButton, cotButton,
                    advancedButton, askAiButton;
     TextView resultText;
+
+    private MaterialButton selectedButton = null;
+    private String lastTrigFunction = null;
 
     @Nullable
     @Override
@@ -45,12 +49,30 @@ public class TrigFragment extends Fragment {
         askAiButton = view.findViewById(R.id.askAiButton);
         resultText = view.findViewById(R.id.resultText);
 
-        sinButton.setOnClickListener(v -> calculateTrig("sin"));
-        cosButton.setOnClickListener(v -> calculateTrig("cos"));
-        tanButton.setOnClickListener(v -> calculateTrig("tan"));
-        secButton.setOnClickListener(v -> calculateTrig("sec"));
-        cosecButton.setOnClickListener(v -> calculateTrig("cosec"));
-        cotButton.setOnClickListener(v -> calculateTrig("cot"));
+        sinButton.setOnClickListener(v -> {
+            setSelectedTrig("sin", sinButton);
+            calculateTrig("sin");
+        });
+        cosButton.setOnClickListener(v -> {
+            setSelectedTrig("cos", cosButton);
+            calculateTrig("cos");
+        });
+        tanButton.setOnClickListener(v -> {
+            setSelectedTrig("tan", tanButton);
+            calculateTrig("tan");
+        });
+        secButton.setOnClickListener(v -> {
+            setSelectedTrig("sec", secButton);
+            calculateTrig("sec");
+        });
+        cosecButton.setOnClickListener(v -> {
+            setSelectedTrig("cosec", cosecButton);
+            calculateTrig("cosec");
+        });
+        cotButton.setOnClickListener(v -> {
+            setSelectedTrig("cot", cotButton);
+            calculateTrig("cot");
+        });
 
         advancedButton.setOnClickListener(v -> showAdvanced());
 
@@ -75,6 +97,16 @@ public class TrigFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void setSelectedTrig(String function, MaterialButton button) {
+        lastTrigFunction = function;
+        if (selectedButton != null) {
+            selectedButton.setStrokeWidth(0);
+        }
+        selectedButton = button;
+        selectedButton.setStrokeWidth(6);
+        selectedButton.setStrokeColor(ContextCompat.getColorStateList(requireContext(), R.color.white));
     }
 
     private void calculateTrig(String type) {
@@ -147,67 +179,11 @@ public class TrigFragment extends Fragment {
     }
 
     private void showAdvanced() {
-        String angleStr = inputAngle.getText().toString().trim();
-        if (angleStr.isEmpty()) {
-            Toast.makeText(getContext(), "Enter angle", Toast.LENGTH_SHORT).show();
+        if (lastTrigFunction == null) {
+            Toast.makeText(getContext(), "Select a function first", Toast.LENGTH_SHORT).show();
             return;
         }
-        try {
-            double degrees = Double.parseDouble(angleStr);
-            double radians = Math.toRadians(degrees);
-            double sin = Math.sin(radians);
-            double cos = Math.cos(radians);
-            double tan = Math.tan(radians);
-
-            StringBuilder steps = new StringBuilder();
-            steps.append("Angle: ").append(degrees).append("°\n");
-            steps.append("Radians: ").append(String.format("%.5f", radians)).append(" rad\n\n");
-
-            steps.append("Trig Values:\n");
-            steps.append("sin(θ) = ").append(isAlmostZero(sin) ? "0" : format(sin)).append("\n");
-            steps.append("cos(θ) = ").append(isAlmostZero(cos) ? "0" : format(cos)).append("\n");
-            steps.append("tan(θ) = ").append(isAlmostZero(cos) ? "undefined" : format(tan)).append("\n\n");
-
-            steps.append("Trig Identities:\n");
-            double sin2 = sin * sin;
-            double cos2 = cos * cos;
-            double lhs1 = sin2 + cos2;
-            steps.append("sin²θ + cos²θ = ")
-                    .append(format(sin2)).append(" + ").append(format(cos2))
-                    .append(" = ").append(format(lhs1)).append(lhs1 >= 0.999 && lhs1 <= 1.001 ? " ✅\n" : " ❌\n");
-
-            if (!isAlmostZero(cos)) {
-                double sec = 1 / cos;
-                double tan2 = tan * tan;
-                double rhs2 = 1 + tan2;
-                steps.append("1 + tan²θ = ")
-                        .append("1 + ").append(format(tan2))
-                        .append(" = ").append(format(rhs2))
-                        .append(" = sec²θ = ").append(format(sec * sec))
-                        .append((Math.abs(rhs2 - sec * sec) < 0.01 ? " ✅\n" : " ❌\n"));
-            } else {
-                steps.append("1 + tan²θ = undefined (tan is undefined) ❌\n");
-            }
-
-            if (!isAlmostZero(sin)) {
-                double cot = 1 / tan;
-                double cot2 = cot * cot;
-                double cosec = 1 / sin;
-                double rhs3 = 1 + cot2;
-                steps.append("1 + cot²θ = ")
-                        .append("1 + ").append(format(cot2))
-                        .append(" = ").append(format(rhs3))
-                        .append(" = cosec²θ = ").append(format(cosec * cosec))
-                        .append((Math.abs(rhs3 - cosec * cosec) < 0.01 ? " ✅\n" : " ❌\n"));
-            } else {
-                steps.append("1 + cot²θ = undefined (sin is 0) ❌\n");
-            }
-
-            resultText.setText(steps.toString());
-            askAiButton.setVisibility(View.VISIBLE);
-        } catch (Exception e) {
-            Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_SHORT).show();
-        }
+        calculateTrig(lastTrigFunction);
     }
 
     private boolean isAlmostZero(double value) {
