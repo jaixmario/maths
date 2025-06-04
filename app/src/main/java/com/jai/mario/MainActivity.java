@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.jai.mario.fragments.ChatFragment;
 import com.jai.mario.fragments.HomeFragment;
 import com.jai.mario.fragments.SettingsFragment;
 import com.jai.mario.UpdateChecker;
@@ -33,9 +34,12 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment;
+            Fragment selectedFragment = null;
+
             if (item.getItemId() == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
+            } else if (item.getItemId() == R.id.nav_chat) {
+                selectedFragment = new ChatFragment();
             } else if (item.getItemId() == R.id.nav_settings) {
                 selectedFragment = new SettingsFragment();
             } else {
@@ -52,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             bottomNav.setSelectedItemId(R.id.nav_home);
         }
+
         if (prefs.getBoolean("checkForUpdates", true)) {
             UpdateChecker.checkForUpdate(this);
         }
