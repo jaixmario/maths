@@ -105,16 +105,31 @@ public class TrigFragment extends Fragment {
                     display = "tan(" + degrees + "°) = " + format(result);
                     break;
                 case "sec":
-                    result = 1 / Math.cos(radians);
-                    display = "sec(" + degrees + "°) = 1 / cos(" + degrees + ") = " + format(result);
+                    double cos = Math.cos(radians);
+                    if (isAlmostZero(cos)) {
+                        display = "sec(" + degrees + "°) is undefined (cos = 0)";
+                    } else {
+                        result = 1 / cos;
+                        display = "sec(" + degrees + "°) = 1 / cos(" + degrees + ") = " + format(result);
+                    }
                     break;
                 case "cosec":
-                    result = 1 / Math.sin(radians);
-                    display = "cosec(" + degrees + "°) = 1 / sin(" + degrees + ") = " + format(result);
+                    double sin = Math.sin(radians);
+                    if (isAlmostZero(sin)) {
+                        display = "cosec(" + degrees + "°) is undefined (sin = 0)";
+                    } else {
+                        result = 1 / sin;
+                        display = "cosec(" + degrees + "°) = 1 / sin(" + degrees + ") = " + format(result);
+                    }
                     break;
                 case "cot":
-                    result = 1 / Math.tan(radians);
-                    display = "cot(" + degrees + "°) = 1 / tan(" + degrees + ") = " + format(result);
+                    double tan = Math.tan(radians);
+                    if (isAlmostZero(tan)) {
+                        display = "cot(" + degrees + "°) is undefined (tan = 0)";
+                    } else {
+                        result = 1 / tan;
+                        display = "cot(" + degrees + "°) = 1 / tan(" + degrees + ") = " + format(result);
+                    }
                     break;
                 default:
                     display = "Unknown function";
@@ -150,6 +165,10 @@ public class TrigFragment extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean isAlmostZero(double value) {
+        return Math.abs(value) < 1e-10;
     }
 
     private String format(double value) {
