@@ -35,7 +35,7 @@ public class HomeFragment extends Fragment {
                     case 1: return new CubeFragment();
                     case 2: return new LcmHcfFragment();
                     case 3: return new TrigFragment();
-                    case 4: return new PowerFragment() 
+                    case 4: return new PowerFragment();
                     default: return new SquareFragment();
                 }
             }
