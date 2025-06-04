@@ -101,8 +101,13 @@ public class TrigFragment extends Fragment {
                     display = "cos(" + degrees + "°) = " + format(result);
                     break;
                 case "tan":
-                    result = Math.tan(radians);
-                    display = "tan(" + degrees + "°) = " + format(result);
+                    double cosCheck = Math.cos(radians);
+                    if (isAlmostZero(cosCheck)) {
+                        display = "tan(" + degrees + "°) is undefined (cos = 0)";
+                    } else {
+                        result = Math.tan(radians);
+                        display = "tan(" + degrees + "°) = " + format(result);
+                    }
                     break;
                 case "sec":
                     double cos = Math.cos(radians);
@@ -150,15 +155,53 @@ public class TrigFragment extends Fragment {
         try {
             double degrees = Double.parseDouble(angleStr);
             double radians = Math.toRadians(degrees);
-            StringBuilder steps = new StringBuilder();
+            double sin = Math.sin(radians);
+            double cos = Math.cos(radians);
+            double tan = Math.tan(radians);
 
+            StringBuilder steps = new StringBuilder();
             steps.append("Angle: ").append(degrees).append("°\n");
             steps.append("Radians: ").append(String.format("%.5f", radians)).append(" rad\n\n");
+
+            steps.append("Trig Values:\n");
+            steps.append("sin(θ) = ").append(isAlmostZero(sin) ? "0" : format(sin)).append("\n");
+            steps.append("cos(θ) = ").append(isAlmostZero(cos) ? "0" : format(cos)).append("\n");
+            steps.append("tan(θ) = ").append(isAlmostZero(cos) ? "undefined" : format(tan)).append("\n\n");
+
             steps.append("Trig Identities:\n");
-            steps.append("sin²θ + cos²θ = 1\n");
-            steps.append("1 + tan²θ = sec²θ\n");
-            steps.append("1 + cot²θ = cosec²θ\n\n");
-            steps.append("Values computed using Math library");
+            double sin2 = sin * sin;
+            double cos2 = cos * cos;
+            double lhs1 = sin2 + cos2;
+            steps.append("sin²θ + cos²θ = ")
+                    .append(format(sin2)).append(" + ").append(format(cos2))
+                    .append(" = ").append(format(lhs1)).append(lhs1 >= 0.999 && lhs1 <= 1.001 ? " ✅\n" : " ❌\n");
+
+            if (!isAlmostZero(cos)) {
+                double sec = 1 / cos;
+                double tan2 = tan * tan;
+                double rhs2 = 1 + tan2;
+                steps.append("1 + tan²θ = ")
+                        .append("1 + ").append(format(tan2))
+                        .append(" = ").append(format(rhs2))
+                        .append(" = sec²θ = ").append(format(sec * sec))
+                        .append((Math.abs(rhs2 - sec * sec) < 0.01 ? " ✅\n" : " ❌\n"));
+            } else {
+                steps.append("1 + tan²θ = undefined (tan is undefined) ❌\n");
+            }
+
+            if (!isAlmostZero(sin)) {
+                double cot = 1 / tan;
+                double cot2 = cot * cot;
+                double cosec = 1 / sin;
+                double rhs3 = 1 + cot2;
+                steps.append("1 + cot²θ = ")
+                        .append("1 + ").append(format(cot2))
+                        .append(" = ").append(format(rhs3))
+                        .append(" = cosec²θ = ").append(format(cosec * cosec))
+                        .append((Math.abs(rhs3 - cosec * cosec) < 0.01 ? " ✅\n" : " ❌\n"));
+            } else {
+                steps.append("1 + cot²θ = undefined (sin is 0) ❌\n");
+            }
 
             resultText.setText(steps.toString());
             askAiButton.setVisibility(View.VISIBLE);
