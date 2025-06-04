@@ -9,6 +9,7 @@ import com.jai.mario.fragments.SquareFragment;
 import com.jai.mario.fragments.CubeFragment;
 import com.jai.mario.fragments.LcmHcfFragment;
 import com.jai.mario.fragments.TrigFragment; 
+import com.jai.mario.fragments.PowerFragment;
 
 public class TabPagerAdapter extends FragmentStateAdapter {
 
@@ -23,13 +24,19 @@ public class TabPagerAdapter extends FragmentStateAdapter {
             case 0: return new SquareFragment();
             case 1: return new CubeFragment();
             case 2: return new LcmHcfFragment();
-            case 3: return new TrigFragment(); // ✅ New case
+            case 3: return new TrigFragment();
+            case 4: return new PowerFragment(); 
             default: return new SquareFragment();
         }
     }
 
     @Override
     public int getItemCount() {
-        return 4; // ✅ Updated count
+        return 5; // ✅ Updated count
     }
 }
+
+
+
+
+

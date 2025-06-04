@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxBackgroundColor="#1F1F1F"
+            app:boxStrokeColor="#BB86FC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter value of a"
+                android:textColor="#FFFFFF"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxBackgroundColor="#1F1F1F"
+            app:boxStrokeColor="#BB86FC"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter value of b"
+                android:textColor="#FFFFFF"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxBackgroundColor="#1F1F1F"
+            app:boxStrokeColor="#BB86FC"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter exponent n"
+                android:textColor="#FFFFFF"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/solveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Solve (a + b)^n"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="24dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#03DAC6" />
+
+        <TextView
+            android:id="@+id/resultText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:paddingTop="24dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>
