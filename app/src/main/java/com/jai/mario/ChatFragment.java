@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 
 import com.jai.mario.R;
 
+import org.json.JSONObject;
+
 import java.util.concurrent.Executors;
 import okhttp3.*;
 
@@ -19,7 +21,8 @@ public class ChatFragment extends Fragment {
 
     private EditText messageInput;
     private Button sendBtn;
-    private TextView chatOutput;
+    private LinearLayout chatContainer;
+    private ScrollView chatScroll;
 
     private final OkHttpClient client = new OkHttpClient();
 
@@ -31,7 +34,8 @@ public class ChatFragment extends Fragment {
 
         messageInput = view.findViewById(R.id.messageInput);
         sendBtn = view.findViewById(R.id.sendButton);
-        chatOutput = view.findViewById(R.id.chatOutput);
+        chatContainer = view.findViewById(R.id.chatContainer);
+        chatScroll = view.findViewById(R.id.chatScroll);
 
         sendBtn.setOnClickListener(v -> {
             String prompt = messageInput.getText().toString().trim();
@@ -41,13 +45,13 @@ public class ChatFragment extends Fragment {
             }
 
             messageInput.setText("");
-            chatOutput.append("You: " + prompt + "\n\n");
+            addMessage(prompt, true);
 
             SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", requireContext().MODE_PRIVATE);
             String apiKey = prefs.getString("apiKey", null);
 
             if (apiKey == null || apiKey.trim().isEmpty()) {
-                chatOutput.append("⚠️ Please enter Gemini API key in Settings.\n\n");
+                addMessage("⚠️ Please enter Gemini API key in Settings.", false);
                 return;
             }
 
@@ -60,13 +64,12 @@ public class ChatFragment extends Fragment {
     private void sendPromptToGemini(String apiKey, String prompt) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                String GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
-
+                String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
                 MediaType JSON = MediaType.get("application/json; charset=utf-8");
                 String json = "{ \"contents\": [ { \"parts\": [ { \"text\": \"" + prompt + "\" } ] } ] }";
 
                 Request request = new Request.Builder()
-                        .url(GEMINI_URL)
+                        .url(url)
                         .post(RequestBody.create(json, JSON))
                         .build();
 
@@ -78,7 +81,7 @@ public class ChatFragment extends Fragment {
 
                     String body = response.body().string();
                     String reply = extractReply(body);
-                    showResponse("Gemini: " + reply);
+                    showResponse(reply);
                 }
             } catch (Exception e) {
                 showResponse("❌ Exception: " + e.getMessage());
@@ -86,9 +89,39 @@ public class ChatFragment extends Fragment {
         });
     }
 
+    private void showResponse(String text) {
+        requireActivity().runOnUiThread(() -> addMessage(text, false));
+    }
+
+    private void addMessage(String message, boolean isUser) {
+        if (getContext() == null || getView() == null) return;
+
+        TextView bubble = new TextView(getContext());
+        bubble.setText(message);
+        bubble.setTextColor(isUser ? 0xFF121212 : 0xFFFFFFFF);
+        bubble.setBackgroundResource(isUser ? R.drawable.bubble_user : R.drawable.bubble_ai);
+        bubble.setPadding(24, 16, 24, 16);
+        bubble.setTextSize(16);
+        bubble.setMaxWidth(dpToPx(280));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 12, 0, 0);
+        params.gravity = isUser ? Gravity.END : Gravity.START;
+        bubble.setLayoutParams(params);
+
+        chatContainer.addView(bubble);
+        chatScroll.post(() -> chatScroll.fullScroll(View.FOCUS_DOWN));
+    }
+
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
+    }
+
     private String extractReply(String responseBody) {
         try {
-            return new org.json.JSONObject(responseBody)
+            return new JSONObject(responseBody)
                     .getJSONArray("candidates")
                     .getJSONObject(0)
                     .getJSONObject("content")
@@ -98,9 +131,5 @@ public class ChatFragment extends Fragment {
         } catch (Exception e) {
             return "⚠️ Could not parse reply.";
         }
-    }
-
-    private void showResponse(String text) {
-        requireActivity().runOnUiThread(() -> chatOutput.append(text + "\n\n"));
     }
 }
