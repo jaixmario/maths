@@ -23,7 +23,9 @@ import androidx.fragment.app.Fragment;
 public class TrigFragment extends Fragment {
 
     TextInputEditText inputAngle;
-    MaterialButton sinButton, cosButton, tanButton, advancedButton, askAiButton;
+    MaterialButton sinButton, cosButton, tanButton,
+                   secButton, cosecButton, cotButton,
+                   advancedButton, askAiButton;
     TextView resultText;
 
     @Nullable
@@ -36,6 +38,9 @@ public class TrigFragment extends Fragment {
         sinButton = view.findViewById(R.id.sinButton);
         cosButton = view.findViewById(R.id.cosButton);
         tanButton = view.findViewById(R.id.tanButton);
+        secButton = view.findViewById(R.id.secButton);
+        cosecButton = view.findViewById(R.id.cosecButton);
+        cotButton = view.findViewById(R.id.cotButton);
         advancedButton = view.findViewById(R.id.advancedButton);
         askAiButton = view.findViewById(R.id.askAiButton);
         resultText = view.findViewById(R.id.resultText);
@@ -43,29 +48,16 @@ public class TrigFragment extends Fragment {
         sinButton.setOnClickListener(v -> calculateTrig("sin"));
         cosButton.setOnClickListener(v -> calculateTrig("cos"));
         tanButton.setOnClickListener(v -> calculateTrig("tan"));
+        secButton.setOnClickListener(v -> calculateTrig("sec"));
+        cosecButton.setOnClickListener(v -> calculateTrig("cosec"));
+        cotButton.setOnClickListener(v -> calculateTrig("cot"));
 
-        advancedButton.setOnClickListener(v -> {
-            String angleStr = inputAngle.getText().toString().trim();
-            if (angleStr.isEmpty()) {
-                Toast.makeText(getContext(), "Enter angle", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            try {
-                double degrees = Double.parseDouble(angleStr);
-                double radians = Math.toRadians(degrees);
-                String steps = "Convert degrees to radians:\n" +
-                        degrees + "° × π/180 = " + String.format("%.5f", radians) + " rad";
-                resultText.setText(steps);
-                askAiButton.setVisibility(View.VISIBLE);
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_SHORT).show();
-            }
-        });
+        advancedButton.setOnClickListener(v -> showAdvanced());
 
         askAiButton.setOnClickListener(v -> {
             String result = resultText.getText().toString().trim();
             if (!result.isEmpty()) {
-                String prompt = "Explain how this trigonometric result is calculated:\n" + result;
+                String prompt = "Explain the trigonometric result below with formulas and identities:\n\n" + result;
                 Intent intent = new Intent(getContext(), GeminiActivity.class);
                 intent.putExtra("prompt", prompt);
                 startActivity(intent);
@@ -97,23 +89,70 @@ public class TrigFragment extends Fragment {
             double degrees = Double.parseDouble(angleStr);
             double radians = Math.toRadians(degrees);
             double result;
+            String display;
 
             switch (type) {
                 case "sin":
                     result = Math.sin(radians);
-                    resultText.setText("sin(" + degrees + "°) = " + String.format("%.5f", result));
+                    display = "sin(" + degrees + "°) = " + format(result);
                     break;
                 case "cos":
                     result = Math.cos(radians);
-                    resultText.setText("cos(" + degrees + "°) = " + String.format("%.5f", result));
+                    display = "cos(" + degrees + "°) = " + format(result);
                     break;
                 case "tan":
                     result = Math.tan(radians);
-                    resultText.setText("tan(" + degrees + "°) = " + String.format("%.5f", result));
+                    display = "tan(" + degrees + "°) = " + format(result);
                     break;
+                case "sec":
+                    result = 1 / Math.cos(radians);
+                    display = "sec(" + degrees + "°) = 1 / cos(" + degrees + ") = " + format(result);
+                    break;
+                case "cosec":
+                    result = 1 / Math.sin(radians);
+                    display = "cosec(" + degrees + "°) = 1 / sin(" + degrees + ") = " + format(result);
+                    break;
+                case "cot":
+                    result = 1 / Math.tan(radians);
+                    display = "cot(" + degrees + "°) = 1 / tan(" + degrees + ") = " + format(result);
+                    break;
+                default:
+                    display = "Unknown function";
             }
-        } catch (NumberFormatException e) {
+
+            resultText.setText(display);
+        } catch (Exception e) {
             Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showAdvanced() {
+        String angleStr = inputAngle.getText().toString().trim();
+        if (angleStr.isEmpty()) {
+            Toast.makeText(getContext(), "Enter angle", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            double degrees = Double.parseDouble(angleStr);
+            double radians = Math.toRadians(degrees);
+            StringBuilder steps = new StringBuilder();
+
+            steps.append("Angle: ").append(degrees).append("°\n");
+            steps.append("Radians: ").append(String.format("%.5f", radians)).append(" rad\n\n");
+            steps.append("Trig Identities:\n");
+            steps.append("sin²θ + cos²θ = 1\n");
+            steps.append("1 + tan²θ = sec²θ\n");
+            steps.append("1 + cot²θ = cosec²θ\n\n");
+            steps.append("Values computed using Math library");
+
+            resultText.setText(steps.toString());
+            askAiButton.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String format(double value) {
+        return String.format("%.5f", value);
     }
 }

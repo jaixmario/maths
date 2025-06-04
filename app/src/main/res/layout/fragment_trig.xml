@@ -25,7 +25,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:boxBackgroundColor="#1F1F1F">
+            app:boxBackgroundColor="#1F1F1F"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputAngle"
@@ -37,67 +41,117 @@
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Row 1: sin, cos, tan -->
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginBottom="16dp">
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/sinButton"
-                android:text="sin θ"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="8dp"
+                android:text="sin θ"
+                app:cornerRadius="12dp"
                 app:backgroundTint="#03DAC6"
-                android:textColor="#FFFFFF" />
+                android:textColor="#000000"
+                android:layout_marginEnd="6dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/cosButton"
-                android:text="cos θ"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
+                android:text="cos θ"
+                app:cornerRadius="12dp"
                 app:backgroundTint="#03DAC6"
-                android:textColor="#FFFFFF" />
+                android:textColor="#000000"
+                android:layout_marginHorizontal="6dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tanButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="tan θ"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#03DAC6"
+                android:textColor="#000000"
+                android:layout_marginStart="6dp" />
+        </LinearLayout>
+
+        <!-- Row 2: sec, cosec, cot -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/secButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="sec θ"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#FFB74D"
+                android:textColor="#000000"
+                android:layout_marginEnd="6dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cosecButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="cosec θ"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#FFB74D"
+                android:textColor="#000000"
+                android:layout_marginHorizontal="6dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cotButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="cot θ"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#FFB74D"
+                android:textColor="#000000"
+                android:layout_marginStart="6dp" />
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/tanButton"
-            android:text="tan θ"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:backgroundTint="#03DAC6"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="16dp" />
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/advancedButton"
-            android:text="Advanced Steps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Advanced Steps"
+            app:cornerRadius="16dp"
             app:backgroundTint="#BB86FC"
             android:textColor="#FFFFFF"
             android:layout_marginBottom="12dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/askAiButton"
-            android:text="Ask AI"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Ask AI"
+            app:cornerRadius="16dp"
             app:backgroundTint="#FF0266"
             android:textColor="#FFFFFF"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_marginBottom="16dp" />
 
         <TextView
             android:id="@+id/resultText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:paddingTop="16dp" />
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp" />
+
     </LinearLayout>
 </ScrollView>
