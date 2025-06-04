@@ -34,13 +34,14 @@ public class HomeFragment extends Fragment {
                     case 0: return new SquareFragment();
                     case 1: return new CubeFragment();
                     case 2: return new LcmHcfFragment();
+                    case 3: return new TrigFragment(); // ✅ NEW!
                     default: return new SquareFragment();
                 }
             }
 
             @Override
             public int getItemCount() {
-                return 3;
+                return 4; // ✅ Now includes Trig
             }
         });
 
@@ -49,6 +50,7 @@ public class HomeFragment extends Fragment {
                 case 0: tab.setText("Square"); break;
                 case 1: tab.setText("Cube"); break;
                 case 2: tab.setText("LCM / HCF"); break;
+                case 3: tab.setText("Trig"); break; // ✅ NEW!
             }
         }).attach();
 
