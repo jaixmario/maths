@@ -3,6 +3,12 @@
         android:id="@+id/nav_home"
         android:title="Home"
         android:icon="@drawable/ic_home" />
+
+    <item
+        android:id="@+id/nav_chat"
+        android:title="Chat"
+        android:icon="@drawable/ic_chat" />
+
     <item
         android:id="@+id/nav_settings"
         android:title="Settings"
