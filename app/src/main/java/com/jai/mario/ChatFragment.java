@@ -11,13 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.jai.mario.R;
+import com.zanvent.mathview.MathView;
 
 import org.json.JSONObject;
 
 import java.util.concurrent.Executors;
 import okhttp3.*;
-
-import com.frhnfrq.mathview.MathView;
 
 public class ChatFragment extends Fragment {
 
@@ -47,13 +46,13 @@ public class ChatFragment extends Fragment {
             }
 
             messageInput.setText("");
-            addMessage("<b>You:</b><br>" + prompt, true);
+            addMessage(prompt, true);
 
             SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", requireContext().MODE_PRIVATE);
             String apiKey = prefs.getString("apiKey", null);
 
             if (apiKey == null || apiKey.trim().isEmpty()) {
-                addMessage("<b>⚠️ Please enter Gemini API key in Settings.</b>", false);
+                addMessage("⚠️ Please enter Gemini API key in Settings.", false);
                 return;
             }
 
@@ -77,7 +76,7 @@ public class ChatFragment extends Fragment {
 
                 try (Response response = client.newCall(request).execute()) {
                     if (!response.isSuccessful()) {
-                        showResponse("<b>❌ Error:</b> " + response.message());
+                        showResponse("❌ Error: " + response.message());
                         return;
                     }
 
@@ -86,7 +85,7 @@ public class ChatFragment extends Fragment {
                     showResponse(reply);
                 }
             } catch (Exception e) {
-                showResponse("<b>❌ Exception:</b> " + e.getMessage());
+                showResponse("❌ Exception: " + e.getMessage());
             }
         });
     }
@@ -99,10 +98,10 @@ public class ChatFragment extends Fragment {
         if (getContext() == null || getView() == null) return;
 
         MathView mathView = new MathView(getContext());
+        mathView.setText(message);
         mathView.setTextColor(isUser ? "#121212" : "#FFFFFF");
         mathView.setTextSize(16);
-        mathView.setText("<p style='color:" + (isUser ? "#121212" : "#FFFFFF") + ";'>" + message + "</p>");
-        mathView.getSettings().setJavaScriptEnabled(true);
+        mathView.setPixelScaleType(MathView.Scale.SCALE_DP);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -113,6 +112,10 @@ public class ChatFragment extends Fragment {
 
         chatContainer.addView(mathView);
         chatScroll.post(() -> chatScroll.fullScroll(View.FOCUS_DOWN));
+    }
+
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 
     private String extractReply(String responseBody) {
@@ -128,4 +131,4 @@ public class ChatFragment extends Fragment {
             return "⚠️ Could not parse reply.";
         }
     }
-}  
+}
