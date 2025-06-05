@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.util.concurrent.Executors;
 import okhttp3.*;
 
-import io.github.kexanie.library.MathView;
+import com.frhnfrq.mathview.MathView;
 
 public class ChatFragment extends Fragment {
 
