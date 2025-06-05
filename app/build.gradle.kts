@@ -50,4 +50,5 @@ dependencies {
     implementation ("com.squareup.okio:okio:3.8.0")
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("com.google.android.material:material:1.14.0-alpha01")
+    implementation("com.github.frhnfrq:MathView:1.2")
 }
