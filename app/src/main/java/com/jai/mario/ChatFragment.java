@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.jai.mario.R;
-import com.zanvent.mathview.MathView;
 
 import org.json.JSONObject;
 
@@ -97,20 +96,22 @@ public class ChatFragment extends Fragment {
     private void addMessage(String message, boolean isUser) {
         if (getContext() == null || getView() == null) return;
 
-        MathView mathView = new MathView(getContext());
-        mathView.setText(message);
-        mathView.setTextColor(isUser ? "#121212" : "#FFFFFF");
-        mathView.setTextSize(16);
-        mathView.setPixelScaleType(MathView.Scale.SCALE_DP);
+        TextView bubble = new TextView(getContext());
+        bubble.setText(message);
+        bubble.setTextColor(isUser ? 0xFF121212 : 0xFFFFFFFF);
+        bubble.setBackgroundResource(isUser ? R.drawable.bubble_user : R.drawable.bubble_ai);
+        bubble.setPadding(24, 16, 24, 16);
+        bubble.setTextSize(16);
+        bubble.setMaxWidth(dpToPx(280));
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 12, 0, 0);
         params.gravity = isUser ? Gravity.END : Gravity.START;
-        mathView.setLayoutParams(params);
+        bubble.setLayoutParams(params);
 
-        chatContainer.addView(mathView);
+        chatContainer.addView(bubble);
         chatScroll.post(() -> chatScroll.fullScroll(View.FOCUS_DOWN));
     }
 
