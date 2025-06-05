@@ -17,8 +17,6 @@ import org.json.JSONObject;
 import java.util.concurrent.Executors;
 import okhttp3.*;
 
-import io.github.kexanie.library.MathView;
-
 public class ChatFragment extends Fragment {
 
     private EditText messageInput;
@@ -47,13 +45,13 @@ public class ChatFragment extends Fragment {
             }
 
             messageInput.setText("");
-            addMessage("<b>You:</b><br>" + prompt, true);
+            addMessage(prompt, true);
 
             SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", requireContext().MODE_PRIVATE);
             String apiKey = prefs.getString("apiKey", null);
 
             if (apiKey == null || apiKey.trim().isEmpty()) {
-                addMessage("<b>⚠️ Please enter Gemini API key in Settings.</b>", false);
+                addMessage("⚠️ Please enter Gemini API key in Settings.", false);
                 return;
             }
 
@@ -77,7 +75,7 @@ public class ChatFragment extends Fragment {
 
                 try (Response response = client.newCall(request).execute()) {
                     if (!response.isSuccessful()) {
-                        showResponse("<b>❌ Error:</b> " + response.message());
+                        showResponse("❌ Error: " + response.message());
                         return;
                     }
 
@@ -86,7 +84,7 @@ public class ChatFragment extends Fragment {
                     showResponse(reply);
                 }
             } catch (Exception e) {
-                showResponse("<b>❌ Exception:</b> " + e.getMessage());
+                showResponse("❌ Exception: " + e.getMessage());
             }
         });
     }
@@ -98,21 +96,27 @@ public class ChatFragment extends Fragment {
     private void addMessage(String message, boolean isUser) {
         if (getContext() == null || getView() == null) return;
 
-        MathView mathView = new MathView(getContext());
-        mathView.setTextColor(isUser ? "#121212" : "#FFFFFF");
-        mathView.setTextSize(16);
-        mathView.setText("<p style='color:" + (isUser ? "#121212" : "#FFFFFF") + ";'>" + message + "</p>");
-        mathView.getSettings().setJavaScriptEnabled(true);
+        TextView bubble = new TextView(getContext());
+        bubble.setText(message);
+        bubble.setTextColor(isUser ? 0xFF121212 : 0xFFFFFFFF);
+        bubble.setBackgroundResource(isUser ? R.drawable.bubble_user : R.drawable.bubble_ai);
+        bubble.setPadding(24, 16, 24, 16);
+        bubble.setTextSize(16);
+        bubble.setMaxWidth(dpToPx(280));
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 12, 0, 0);
         params.gravity = isUser ? Gravity.END : Gravity.START;
-        mathView.setLayoutParams(params);
+        bubble.setLayoutParams(params);
 
-        chatContainer.addView(mathView);
+        chatContainer.addView(bubble);
         chatScroll.post(() -> chatScroll.fullScroll(View.FOCUS_DOWN));
+    }
+
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 
     private String extractReply(String responseBody) {
@@ -128,4 +132,4 @@ public class ChatFragment extends Fragment {
             return "⚠️ Could not parse reply.";
         }
     }
-}  
+}
